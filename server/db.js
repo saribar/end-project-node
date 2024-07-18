@@ -7,8 +7,6 @@ const message = require('./schemas/message');
 const dbUrl = process.env.MONGODB_CONNECTION; 
 
 mongoose.connect(dbUrl, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
   serverSelectionTimeoutMS: 20000 
 })
   .then(() => console.log('Connected to MongoDB'))

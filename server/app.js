@@ -1,5 +1,5 @@
 const cars = require('.//schemas/cars');
-const carsRoute = require('./routes/cars');
+const carRouter = require('./routes/cars');
 require('dotenv').config();
 const { login, verifyJWT } = require('./jwt');
 const users = require('.//schemas/user');
@@ -19,6 +19,7 @@ var app = express();
 app.use(express.json());
 
 app.use('/users', userRouter);
+app.use('/cars',carRouter);
 
 const server = http.createServer(app);
 
