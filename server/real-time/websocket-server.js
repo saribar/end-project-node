@@ -1,4 +1,3 @@
-
 const WebSocket = require('ws'); // use wss for secured option
 const server = new WebSocket.Server({ port: 3000 });
 

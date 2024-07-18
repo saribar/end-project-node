@@ -1,5 +1,5 @@
 
-const Car = require('../models/cars')
+const Car = require('../schemas/cars');
 
 exports.addCar = async(req,res)=>{
     console.log(req.body);
@@ -24,14 +24,13 @@ const carId  = req.params.carId;
     }
   };
   
-
   exports.getAllCars = async (req, res) => {
     try {
       const cars = await Car.find();
       res.json(cars);
     } catch (error) {
-      console.error('Failed to get users:', error);
-      res.status(500).json({ message: 'Failed to get users' });
+      console.error('Failed to get cars:', error);
+      res.status(500).json({ message: 'Failed to get cars' });
     }
   };
   

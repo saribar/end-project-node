@@ -6,12 +6,11 @@ const SendMessage = ({ socket, username, room}) => {
 
     const [message, setMessage] = useState(' ');
     
-    const SendMessage = () => {
-        if(message !== ''){
+    const handleSendMessage = async () => {
             const __createdtime__ = Date.now();
             socket.emit('send_message', {username, room, message, __createdtime__});
             setMessage('');
-        }
+        
     };
 
     return (
@@ -22,7 +21,7 @@ const SendMessage = ({ socket, username, room}) => {
                 onChange={(e) => setMessage(e.target.value)}
                 value={message}
             />
-            <button className='btn btn-primary' onClick={SendMessage}>
+            <button className='btn btn-primary' onClick={handleSendMessage}>
                 Send Message
             </button>
         </div>
