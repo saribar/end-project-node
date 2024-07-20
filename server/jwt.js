@@ -1,5 +1,8 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const mongo = require('./db');
+const {UserModel} = require('./schemas/user');
+const { db } = require('./schemas/message');
 
 // הגדרת סוד
 const secretKey = 'mySecretSecretKey';
@@ -14,11 +17,11 @@ const standardClaims = {
 // פונקציה לאימות משתמש
 async function login(username, password) {
     try {
-        await mongoClient.connect();
-        const db = mongoClient.db('yourDatabase');
+        await db.connect();
+        // const db = db.connection.db;
         const usersCollection = db.collection('users');
 
-        const user = await usersCollection.findOne({ username });
+        const user = await UserModel.findOne({ username });
         if (!user) {
             throw new Error('User not found');
         }
@@ -37,8 +40,9 @@ async function login(username, password) {
 
         const token = jwt.sign(userClaims, secretKey, { expiresIn: '1h' });
         return token;
+    
     } finally {
-        await mongoClient.close();
+        await db.close();
     }
 }
 

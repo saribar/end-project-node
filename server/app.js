@@ -14,6 +14,7 @@ const { createSocket } = require('dgram');
 const leaveRoom = require('./utils/leave-room');
 const mongodbSaveMessage = require('./services/mongodb-save-message');
 const mongodbGetMessages = require('./services/mongodb-get-messages');
+const { log } = require('console');
 require('dotenv').config();
 var app = express();
 app.use(express.json());
@@ -97,17 +98,13 @@ io.on('connection', (socket) => {
 
 server.listen(4000, () => 'server is running on port 3000');
 
-
-
-
-
-
 app.post('/login', async (req, res) => {
   const { username, password } = req.body;
 
   try {
     const token = await login(username, password);
     res.json({ token });
+    console.log(token);
   } catch (error) {
     res.status(401).json({ error: error.message });
   }
