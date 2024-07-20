@@ -26,7 +26,7 @@ exports.addUser = (req, res) => {
 exports.updateUser = async (req, res) => {
   const { userId } = req.params;
   console.log(userId);
-  const { name, email, phone } = req.body;
+  const { username, email, phone } = req.body;
 
   try {
     // const { error } = validUser(req.body);

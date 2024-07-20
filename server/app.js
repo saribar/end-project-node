@@ -100,7 +100,6 @@ server.listen(4000, () => 'server is running on port 3000');
 
 app.post('/login', async (req, res) => {
   const { username, password } = req.body;
-
   try {
     const token = await login(username, password);
     res.json({ token });
@@ -109,7 +108,6 @@ app.post('/login', async (req, res) => {
     res.status(401).json({ error: error.message });
   }
 });
-
 
 app.use('/protected', async (req, res, next) => {
   const token = req.headers.authorization;

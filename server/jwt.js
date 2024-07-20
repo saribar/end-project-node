@@ -17,11 +17,12 @@ const standardClaims = {
 // פונקציה לאימות משתמש
 async function login(username, password) {
     try {
-        await db.connect();
+        // await db.connect();
         // const db = db.connection.db;
-        const usersCollection = db.collection('users');
-
+        // const usersCollection = db.collection('users');
         const user = await UserModel.findOne({ username });
+        console.log("the user:",user);
+
         if (!user) {
             throw new Error('User not found');
         }
@@ -35,15 +36,18 @@ async function login(username, password) {
         const userClaims = {
             ...standardClaims,
             userId: user._id,
-            email: user.email,
+            username: username,
         };
 
         const token = jwt.sign(userClaims, secretKey, { expiresIn: '1h' });
+        console.log(userClaims);
         return token;
-    
-    } finally {
-        await db.close();
+    }catch(error){
+        console.error("error");
     }
+    // } finally {
+    //     await db.close();
+    // }
 }
 
 // פונקציה לאימות JWT
@@ -52,7 +56,7 @@ async function verifyJWT(token) {
         const decodedToken = jwt.verify(token, secretKey);
         const userId = decodedToken.userId;
 
-        const user = await mongoose.connection.db.collection('users').findOne({ _id: userId });
+        const user = await collection('users').findOne({ _id: userId });
 
         if (!user) {
             throw new Error('Invalid token');
