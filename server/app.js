@@ -1,7 +1,7 @@
 const cars = require('.//schemas/cars');
 const carRouter = require('./routes/cars');
 require('dotenv').config();
-const { login, verifyJWT } = require('./jwt');
+const { login, verifyJWT,register } = require('./jwt');
 const users = require('.//schemas/user');
 const userRouter = require('./routes/users')
 const message = require('./schemas/message');
@@ -15,6 +15,8 @@ const leaveRoom = require('./utils/leave-room');
 const mongodbSaveMessage = require('./services/mongodb-save-message');
 const mongodbGetMessages = require('./services/mongodb-get-messages');
 const { log } = require('console');
+const jwt = require('jsonwebtoken');
+
 require('dotenv').config();
 var app = express();
 app.use(express.json());
@@ -97,6 +99,20 @@ io.on('connection', (socket) => {
 });
 
 server.listen(4000, () => 'server is running on port 3000');
+
+app.post('/register', async (req, res) => {
+  try {
+    const { username, password } = req.body;
+    const newUser = await register(username, password);
+    const secretKey = process.env.SECRET_KEY;
+    const token = jwt.sign({ userId: newUser.id }, secretKey);
+    res.json({ token });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
 
 app.post('/login', async (req, res) => {
   const { username, password } = req.body;
