@@ -1,7 +1,7 @@
 const cars = require('.//schemas/cars');
 const carRouter = require('./routes/cars');
 require('dotenv').config();
-const { login, verifyJWT,register } = require('./jwt');
+const { login, verifyJWT,register } = require('./services/jwt');
 const users = require('.//schemas/user');
 const userRouter = require('./routes/users')
 const message = require('./schemas/message');
@@ -14,7 +14,7 @@ const { createSocket } = require('dgram');
 const leaveRoom = require('./utils/leave-room');
 const mongodbSaveMessage = require('./services/mongodb-save-message');
 const mongodbGetMessages = require('./services/mongodb-get-messages');
-const { log } = require('console');
+require('console');
 const jwt = require('jsonwebtoken');
 
 require('dotenv').config();
@@ -58,8 +58,6 @@ io.on('connection', (socket) => {
     allUsers.push({ id: socket.id, username, room });
     chatRoomUsers = allUsers.filter((user) => user.room === room);
     socket.to(room).emit('chatroom_users', chatRoomUsers);
-    // console.log(createSocket);
-    // createSocket.emit('chatroom_users', chatRoomUsers);
   }
   );
 
@@ -102,16 +100,15 @@ server.listen(4000, () => 'server is running on port 3000');
 
 app.post('/register', async (req, res) => {
   try {
-    const { username, password } = req.body;
-    const newUser = await register(username, password);
+    const { username, password, role='user' } = req.body;
+    const newUser = await register(username, password, role);
     const secretKey = process.env.SECRET_KEY;
-    const token = jwt.sign({ userId: newUser.id }, secretKey);
+    const token = jwt.sign({ userId: newUser.id , role: newUser.role}, secretKey);
     res.json({ token });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
-
 
 
 app.post('/login', async (req, res) => {
@@ -124,6 +121,19 @@ app.post('/login', async (req, res) => {
     res.status(401).json({ error: error.message });
   }
 });
+
+const isAdmin = async (req,res, next) => {
+  try{
+    const user = await verifyJWT(req.headers.authorization);
+    if(user.role === 'admin'){
+      next();
+    }else{
+      res.status(401).json({ error: 'Unauthorized access. Admin role required.' });
+    }
+  }catch(error){
+    res.status(error.status || 500).json({ error: error.message });
+  }
+};
 
 app.use('/protected', async (req, res, next) => {
   const token = req.headers.authorization;
