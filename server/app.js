@@ -144,8 +144,6 @@ app.use('/protected', async (req, res, next) => {
 });
 
 app.get('/protected/data', (req, res) => {
-  const user = req.user;
-
   res.json({ data: 'Protected data' });
 });
 
