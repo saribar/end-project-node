@@ -1,7 +1,7 @@
 const cars = require('.//schemas/cars');
 const carRouter = require('./routes/cars');
 require('dotenv').config();
-const { login, verifyJWT,register } = require('./services/jwt');
+const { login, verifyJWT,register,verifyRole } = require('./services/jwt');
 const users = require('.//schemas/user');
 const userRouter = require('./routes/users')
 const message = require('./schemas/message');
@@ -16,6 +16,7 @@ const mongodbSaveMessage = require('./services/mongodb-save-message');
 const mongodbGetMessages = require('./services/mongodb-get-messages');
 require('console');
 const jwt = require('jsonwebtoken');
+
 
 require('dotenv').config();
 var app = express();
@@ -100,7 +101,7 @@ server.listen(4000, () => 'server is running on port 3000');
 
 app.post('/register', async (req, res) => {
   try {
-    const { username, password, role='user' } = req.body;
+    const { username, password, role } = req.body;
     const newUser = await register(username, password, role);
     const secretKey = process.env.SECRET_KEY;
     const token = jwt.sign({ userId: newUser.id , role: newUser.role}, secretKey);
@@ -110,30 +111,21 @@ app.post('/register', async (req, res) => {
   }
 });
 
-
 app.post('/login', async (req, res) => {
   const { username, password } = req.body;
+
   try {
     const token = await login(username, password);
     res.json({ token });
-    console.log(token);
   } catch (error) {
     res.status(401).json({ error: error.message });
   }
 });
 
-const isAdmin = async (req,res, next) => {
-  try{
-    const user = await verifyJWT(req.headers.authorization);
-    if(user.role === 'admin'){
-      next();
-    }else{
-      res.status(401).json({ error: 'Unauthorized access. Admin role required.' });
-    }
-  }catch(error){
-    res.status(error.status || 500).json({ error: error.message });
-  }
-};
+app.get('/admin-route', verifyRole(['admin']), async (req, res) => {
+
+  res.json({ message: 'Welcome admin!' });
+});
 
 app.use('/protected', async (req, res, next) => {
   const token = req.headers.authorization;
@@ -150,7 +142,6 @@ app.use('/protected', async (req, res, next) => {
     res.status(401).json({ error: error.message });
   }
 });
-
 
 app.get('/protected/data', (req, res) => {
   const user = req.user;
