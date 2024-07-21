@@ -1,18 +1,24 @@
-
-const Car = require('../schemas/cars');
+const {CarModel} = require('../schemas/cars');
+const{add, update,get,deletee} = require('../services/cars');
 
 exports.addCar = async(req,res)=>{
     console.log(req.body);
-    const {name} = req.body;
-    const task = await Car.create(req.body);
-    res.json(task)
+    try{
+      add( req.body)
+      res.json({ message: 'Added car successfully' });
+    }catch(error){
+      console.error(error);
+      res.status(500).json({message: 'internal server error'});
+    }
+    
+
 }
 
 exports.deleteCar = async (req, res) => {
 const carId  = req.params.carId;
   console.log(carId);
     try {
-      const deletedCar = await Car.findOne({ carId: carId });
+      const deletedCar = await CarModel.findOne({ carId: carId });
       if (!deletedCar) {
         return res.status(404).json({ message: 'Car not found' });
       }
@@ -26,7 +32,7 @@ const carId  = req.params.carId;
   
   exports.getAllCars = async (req, res) => {
     try {
-      const cars = await Car.find();
+      const cars = await CarModel.find();
       res.json(cars);
     } catch (error) {
       console.error('Failed to get cars:', error);
@@ -37,13 +43,13 @@ const carId  = req.params.carId;
   exports.updateCar = async (req, res) => {
     const { carId } = req.params;
     try {
-        const updatedCar = await Car.findOne({ carId: carId });
+        const updatedCar = await CarModel.findOne({ carId: carId });
       if (!updatedCar) {
         return res.status(404).json({ message: 'Car not found' });
       }
       const currentIsUse = updatedCar.isUse;
       const newIsUse = !currentIsUse;
-      const updatedCarWithNewIsUse = await Car.findOneAndUpdate(
+      const updatedCarWithNewIsUse = await CarModel.findOneAndUpdate(
         { carId: carId },
         { isUse: newIsUse }
       );

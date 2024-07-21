@@ -1,16 +1,16 @@
 const { UserModel } = require('../schemas/user')
-const { add,update,deletee,get} = require('../Service/users')
+const { add,update,deletee,get} = require('../services/users');
 
 
 exports.addUser = (req, res) => {
 
   try {
 
-    const { error } = validUser(req.body);
+    // const { error } = validUser(req.body);
 
-    if (error) {
-      return res.status(400).json({ message: error.details });
-    }
+    // if (error) {
+    //   return res.status(400).json({ message: error.details });
+    // }
     add(req.body)
     res.json({ message: 'Added user successfully' });
 
@@ -26,14 +26,14 @@ exports.addUser = (req, res) => {
 exports.updateUser = async (req, res) => {
   const { userId } = req.params;
   console.log(userId);
-  const { name, email, phone } = req.body;
+  const { username, email, phone } = req.body;
 
   try {
-    const { error } = validUser(req.body);
+    // const { error } = validUser(req.body);
 
-    if (error) {
-      return res.status(400).json({ message: error.details });
-    }
+    // if (error) {
+    //   return res.status(400).json({ message: error.details });
+    // }
   
     var users = await update(userId,req.body)
     return res.status(200).json({ status: 200, data: users, message: "Succesfully" });

@@ -39,13 +39,13 @@ exports.add = async (reqBody) => {
 
 exports.update = async (userId, reqBody) => {
 
-  const { name, email, phone } = reqBody;
+  const { username, email, phone } = reqBody;
 
   try {
    
     const updatedUser = await UserModel.findOneAndUpdate(
       { userId: userId },
-      { name, email, phone },
+      { username, email, phone },
       { new: true }
     );
 

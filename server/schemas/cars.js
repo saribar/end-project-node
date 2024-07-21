@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const Joi = require("joi")
 
-const CarsSchema = new mongoose.Schema({
+const CarSchema = new mongoose.Schema({
     type: {
        type: String,
        require: true
@@ -17,10 +17,18 @@ const CarsSchema = new mongoose.Schema({
     isUse: {
         type: Boolean,
         require: true
-    } 
+    },
+    modelNumber: {
+        type:String,
+        require: true
+    },
+    carId:{
+        type:String,
+        require: true
+    }
 })
 
 // module.exports=mongoose.model("Car", CarsSchema);
-const CarModel=mongoose.model('Car', CarsSchema)
+const CarModel=mongoose.model('Car', CarSchema)
 exports.CarModel=CarModel
 

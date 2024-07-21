@@ -27,10 +27,10 @@ const Home = ({ username, setUsername, room, setRoom, socket }) => {
                     onChange={(e) => setRoom(e.target.value)}
                 >
                     <option>--select Room--</option>
-                    <option value='javascript'>javascript</option>
-                    <option value='node'>Node</option>
-                    <option value='express'>Express</option>
-                    <option value='react'>React</option>
+                    <option value='customers'>Customers</option>
+                    <option value='management '>Management </option>
+                    <option value='secretariat'>Secretariat</option>
+                    <option value='self'>Self</option>
                 </select>
                 <button className='btn btn-secondary' style={{ width: '100%' }}  onClick={() => joinRoom()}>Join Room</button>
             </div>
