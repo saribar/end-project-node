@@ -46,6 +46,7 @@ const Messages = ({ socket }) => {
 
   function formatDateFromTimestamp(timestamp) {
     const date = new Date(timestamp);
+    console.log(date.toLocaleString);
     return date.toLocaleString();
   }
 

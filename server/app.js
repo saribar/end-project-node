@@ -63,10 +63,20 @@ io.on('connection', (socket) => {
   socket.on('send_message', (data) => {
     const { message, username, room, _createdtime_ } = data;
     
+    const isNewUser = !allUsers.some(user => user.id === socket.id);
     io.in(room).emit('receive_message', data);
     mongodbSaveMessage(message, username, room, _createdtime_)
       .then((response) => console.log(response))
       .catch((err) => console.log(err));
+    
+    if(isNewUser){
+      mongodbGetMessages(room)
+      .then((last100Messages) => {
+        socket.emit('last_100_messages');
+      })
+      .catch((err) => console.log(err));
+    }
+    
     io.in(room).emit('receive_message', {
       username,
       room,
@@ -74,11 +84,7 @@ io.on('connection', (socket) => {
       _createdtime_,
     });
 
-    mongodbGetMessages(room)
-      .then((last100Messages) => {
-        socket.emit('last_100_messages');
-      })
-      .catch((err) => console.log(err));
+  
   });
 
   socket.on('leave_room', (data) => {
