@@ -17,8 +17,6 @@ const mongodbGetMessages = require('./services/mongodb-get-messages');
 require('console');
 const jwt = require('jsonwebtoken');
 
-
-require('dotenv').config();
 var app = express();
 app.use(express.json());
 
@@ -64,6 +62,7 @@ io.on('connection', (socket) => {
 
   socket.on('send_message', (data) => {
     const { message, username, room, _createdtime_ } = data;
+    
     io.in(room).emit('receive_message', data);
     mongodbSaveMessage(message, username, room, _createdtime_)
       .then((response) => console.log(response))
