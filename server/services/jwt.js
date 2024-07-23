@@ -68,10 +68,10 @@ function verifyRole(allowedRoles) {
 async function verifyJWT(token) {
     try {
         const decodedToken = jwt.verify(token, secretKey);
-        const userId = decodedToken.userId;
-
-        const user = await UserModel.findOne({ userId: userId });
-        console.log(user.username);
+        const password = decodedToken.userId;
+console.log("password", password);
+        const user = await UserModel.findOne({ password: password });
+        
         if (!user) {
             throw new Error('Invalid token');
         }

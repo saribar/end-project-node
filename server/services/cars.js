@@ -2,20 +2,18 @@ const { CarModel } = require('../schemas/cars');
 
 exports.deletee= async (carId) => { 
  try {
-   var deletedCar = await UserModel.findOneAndDelete({carId: carId});
-   return deletedUser
-    
+   var deletedCar = await CarModel.findOneAndDelete({carId: carId});
+   return deletedCar
     
   } catch (error) {
     console.error('Failed to delete car:', error);
-   
   }
 };
 
 exports.get = async (carId) => {
 
   try {
-    var findCar = await UserModel.findOne({ carId:carId });
+    var findCar = await CarModel.findOne({ carId:carId });
     return findCar;
   } catch (error) {
     console.error('Failed to get car ,services:', error);
