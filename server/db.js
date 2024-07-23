@@ -20,11 +20,3 @@ mongoose.connection.on('timeout', () => {
 });
 
 module.exports = mongoose; 
-
-
-
-
-
-//   const db = mongoose.connection;
-
-//   console.log('Connected');
