@@ -106,10 +106,10 @@ server.listen(4000, () => 'server is running on port 3000');
 
 app.post('/register', async (req, res) => {
   try {
-    const { username, password, role } = req.body;
-    const newUser = await register(username, password, role);
+    const { username,  userId, role } = req.body;
+    const newUser = await register(username, userId, role);
     const secretKey = process.env.SECRET_KEY;
-    const token = jwt.sign({ userId: newUser.id , role: newUser.role}, secretKey);
+    const token = jwt.sign({ userId: newUser.userId , role: newUser.role}, secretKey);
     res.json({ token });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -117,10 +117,10 @@ app.post('/register', async (req, res) => {
 });
 
 app.post('/login', async (req, res) => {
-  const { username, password } = req.body;
+  const { username, userId } = req.body;
 
   try {
-    const token = await login(username, password);
+    const token = await login(username, userId);
     res.json({ token });
   } catch (error) {
     res.status(401).json({ error: error.message });
@@ -132,7 +132,7 @@ app.get('/admin-route', verifyRole(['admin']), async (req, res) => {
   res.json({ message: 'Welcome admin!' });
 });
 
-app.use('/protected', async (req, res, next) => {
+app.use('//protected', async (req, res, next) => {
   const token = req.headers.authorization;
 
   if (!token) {

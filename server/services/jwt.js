@@ -12,7 +12,7 @@ const standardClaims = {
     scope: ['read:users', 'write:posts'],
 };
 // כניסה למערכת
-async function login(username, password) {
+async function login(username, userId) {
 
     try {
         const user = await UserModel.findOne({ username });
@@ -21,7 +21,7 @@ async function login(username, password) {
         }
         console.log("the user:", user);
 
-        const isValidPassword = await bcrypt.compare(password, user.password);
+        const isValidPassword = await bcrypt.compare(userId, user.userId);
         if (!isValidPassword) {
             throw new Error('Invalid password');
         }
@@ -68,26 +68,26 @@ function verifyRole(allowedRoles) {
 async function verifyJWT(token) {
     try {
         const decodedToken = jwt.verify(token, secretKey);
-        const password = decodedToken.userId;
-console.log("password", password);
-        const user = await UserModel.findOne({ password: password });
-        
+        const userId = decodedToken.userId;
+        console.log("password:",userId);
+        const user = await UserModel.findOne({ userId: userId });
+        console.log("user:", user);
+        console.log("user in verifyJWT");
         if (!user) {
             throw new Error('Invalid token');
         }
-
         return user;
     } catch (error) {
         throw error;
     }
 }
 // הרשמה למערכת
-async function register(username, password, role) {
+async function register(username, userId, role) {
     try {
-        const hashedPassword = await bcrypt.hash(password, 10);
+        const hashedPassword = await bcrypt.hash(userId, 10);
         const newUser = new UserModel({
             username,
-            password: hashedPassword,
+            userId: hashedPassword,
             role:role,
         });
 
